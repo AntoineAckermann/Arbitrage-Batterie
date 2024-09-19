@@ -1,1 +1,1 @@
-Tentative d'une mise en place d'une stratégie d'arbitrage sur les prix de l'électricité avec une batterie : optimisation de la charge et décharge à pas temporel pour maximiser le profit.
+Tentative d'une mise en place d'une stratégie d'arbitrage sur les prix de l'électricité avec une batterie domestique : optimisation de la charge et décharge à pas temporel pour maximiser le profit à partir des prix day ahead en France (utilisation des données de transparence d'ENTSOE pour les historiques de prix) ... où l'on se rend compte que ce ne serait pas rentable.
