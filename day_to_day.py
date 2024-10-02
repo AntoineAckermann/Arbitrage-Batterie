@@ -7,7 +7,7 @@ from pyomo.opt import SolverFactory
 
 interval = "202401010000-202501010000"
 
-df = pd.read_csv(f"Day-ahead Prices_{interval}.csv")
+df = pd.read_csv(f"data/Day-ahead Prices_{interval}.csv")
 df.drop(df[df["Day-ahead Price [EUR/MWh]"] == "-"].index, inplace = True)
 df["Day-ahead Price [EUR/MWh]"] = df["Day-ahead Price [EUR/MWh]"].astype(float)
 df["Day-ahead Price [EUR/MWh]"].fillna((df["Day-ahead Price [EUR/MWh]"].shift() + df["Day-ahead Price [EUR/MWh]"].shift(-1))/2, inplace=True)
