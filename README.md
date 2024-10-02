@@ -1,8 +1,12 @@
 Tentative d'une mise en place d'une stratégie d'arbitrage sur les prix de l'électricité avec un BESS (Battery Energy Storage System) : optimisation de la charge et décharge à pas temporel pour maximiser le profit à partir des prix day ahead en France (utilisation des données de transparence d'ENTSOE pour les historiques de prix).
 
+Le fichier "day_to_day.py" réalise l'optimisation sur des horizons de temps de 24h. Cela est rendu possible par la structure du marché day-ahead (les prix heure par heure sont connus à l'avance). On évite également par là d'utiliser un algorithme de prédiction des prix (j'ignore même si c'est possible). 
+
 A améliorer/à creuser :  
+
+ - Propreté du code
  - Prise en compte de la dégradation de la batterie en fonction des stratégies de charge/décharge appliquées. Voir p.ex https://www.sciencedirect.com/science/article/pii/S2352152X24019662#s0025
- - Utilisation des prix intraday
+ - Utilisation des prix intraday ?
  - Prise en compte des services systèmes (Frequency Containment Reserve, aFRR et mFRR, i.e. réserves primaire/secondaire/tertiaire)
 
 Globalement, l'[étude citée](https://www.sciencedirect.com/science/article/pii/S2352152X24019662#bb0035) indique :
