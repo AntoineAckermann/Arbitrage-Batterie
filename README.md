@@ -5,6 +5,7 @@ Le fichier "day_to_day.py" réalise l'optimisation sur des horizons de temps de 
 A améliorer/à creuser :  
 
  - Propreté du code
+ - CSV en sortie avec les données financières (profit annuel et moyenne par jour et par mois notamment)
  - Calcul d'une NPV qui permettrait de déterminer un coût des batteries qui permettrait de rendre le projet rentable : pas facile de projeter les résultats dans le futur dans la mesure où les revenus annuels seront sans doute ammenés à changer (on peut imaginer que cela se fasse plutôt à la hausse, avec l'augmentation du taux de pénétration des EnR dans le mix et probablement une volatilité plus importante des prix)
  - Voir ce qu'il en est des autres pays EU (pas trop compliqué avec les données ENTSO-E)
  - Prise en compte de la dégradation de la batterie en fonction des stratégies de charge/décharge appliquées. Voir p.ex. https://www.sciencedirect.com/science/article/pii/S2352152X24019662#s0025
