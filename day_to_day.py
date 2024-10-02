@@ -5,18 +5,14 @@ from pyomo.environ import ConcreteModel, Var, Objective, Constraint, Suffix, Set
     ConstraintList, value, maximize, Binary
 from pyomo.opt import SolverFactory
 
-interval = "202401010000-202501010000"
+interval = "202401010000-202501010000" # choix du fichier de données 
 
 df = pd.read_csv(f"data/Day-ahead Prices_{interval}.csv")
-df.drop(df[df["Day-ahead Price [EUR/MWh]"] == "-"].index, inplace = True)
+df.drop(df[df["Day-ahead Price [EUR/MWh]"] == "-"].index, inplace = True) 
 df["Day-ahead Price [EUR/MWh]"] = df["Day-ahead Price [EUR/MWh]"].astype(float)
 df["Day-ahead Price [EUR/MWh]"].fillna((df["Day-ahead Price [EUR/MWh]"].shift() + df["Day-ahead Price [EUR/MWh]"].shift(-1))/2, inplace=True)
 df["Day-ahead Price [EUR/MWh]"] = df["Day-ahead Price [EUR/MWh]"]/1000
-
-nb_hours = len(df["Day-ahead Price [EUR/MWh]"])
-nb_days = int(nb_hours/24)
-
-hours_per_day = 24
+df.rename(columns={"Day-ahead Price [EUR/MWh]": "Day-ahead Price [EUR/kWh]")
 
 def opt(E0, prices):
     
@@ -26,7 +22,6 @@ def opt(E0, prices):
     EtP_ratio = 5 #hours
     Pmax = Emax/EtP_ratio # kW
     conv_rate = 0.95
-    
     
     #MISE EN PLACE DU MODELE
     
@@ -61,16 +56,18 @@ def opt(E0, prices):
     return m
     
 
-E0 = 0
-results = pd.DataFrame()
+E0 = 0 # charge initiale ; la batterie est vide
+results = pd.DataFrame() 
+
+nb_hours = len(df["Day-ahead Price [EUR/kWh]"])
+intervals_per_day = 24
+nb_days = int(nb_hours/intervals_per_day)
 
 
-for day_of_year in range(int(nb_days)):
-    print(day_of_year, E0)
+for day_of_year in range(int(nb_days)): # on simule jour par jour ; comme on utilise les prix day-ahead, ils sont connus la veille, on peut donc optimiser au mieux sur 24h du jour après
 
-    daily_prices = list(df["Day-ahead Price [EUR/MWh]"].iloc[day_of_year*24:(day_of_year+1)*24])
+    daily_prices = list(df["Day-ahead Price [EUR/MWh]"].iloc[day_of_year*24:(day_of_year+1)*24]) # prix du jour en question
     
-   
     m = opt(E0, daily_prices)
 
     daily_results = pd.DataFrame()
@@ -81,22 +78,19 @@ for day_of_year in range(int(nb_days)):
     daily_results["Energy prices"] = daily_prices
     daily_results["Cash flow"] = daily_results["Energy prices"]*daily_results["Discharge"] - daily_results["Energy prices"]*daily_results["Charge"] 
 
-    temp = pd.concat([results, daily_results], copy=False, ignore_index=True)
+    temp = pd.concat([results, daily_results], copy=False, ignore_index=True) 
     results.drop(results.index[0:], inplace=True)
-    results[temp.columns] = temp
+    results[temp.columns] = temp 
     
-    E0 = m.SoC[23].value
+    E0 = m.SoC[23].value # le SoC du jour J à 23:59 reste le même que celui du SoC au jour J+1 à 00:00
 
     
-    
-    
-print(results)
-print(list(results["Cash flow"]))
 results.to_csv(f"{interval}_out.csv", sep=";")
 profit = sum(results["Cash flow"])
 print("Profit = {} €\nProfit per day = {}€".format(profit, profit/nb_days))
     
 
+# GRAPHE (largement copier-collé depuis internet)
 
 fig, ax1 = plt.subplots()
 
@@ -108,7 +102,7 @@ ax1.tick_params(axis='y', labelcolor='b')
 
 # Create a secondary y-axis for the prices
 ax2 = ax1.twinx()
-ax2.plot(results.index, list(df["Day-ahead Price [EUR/MWh]"]/1000)[:nb_days*hours_per_day] , label='Prices', color='r')  # Plot prices with a line
+ax2.plot(results.index, list(df["Day-ahead Price [EUR/kWh]"]/1000)[:nb_days*hours_per_day] , label='Prices', color='r')  # Plot prices with a line
 ax2.set_ylabel('Day-ahead Price (EUR/MWh)', color='r')
 ax2.tick_params(axis='y', labelcolor='r')
 
