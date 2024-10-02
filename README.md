@@ -2,6 +2,8 @@ Pprojet personnel : tentative d'une mise en place d'une stratégie d'arbitrage s
 
 Le fichier "day_to_day.py" réalise l'optimisation sur des horizons de temps de 24h. Cela est rendu possible par la structure du marché day-ahead (les prix heure par heure sont connus à l'avance). On évite également par là d'utiliser un algorithme de prédiction des prix (j'ignore même si c'est possible). 
 
+N.B. : on suppose que la batterie est ici un *price-taker*, c'est-à-dire que son action n'influe pas les prix, ce qui semble raisonnable si les batteries restent suffisamment petite (autour de 1 MW de puissance)
+
 A améliorer/à creuser :  
 
  - Propreté du code
